@@ -1,1 +1,1 @@
-A React Framework for building modular business application
+A React Native Framework for building modular business application
