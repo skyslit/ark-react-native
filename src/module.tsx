@@ -30,6 +30,7 @@ export class ArkModule<StateType = any, Providers = any> implements IArkModule<S
     }
 
     useConnect(_connect: any): void {
+        console.log('Connected...');
         this.connect = _connect;
     }
     
@@ -115,22 +116,6 @@ export class ArkModule<StateType = any, Providers = any> implements IArkModule<S
         Object.keys(componentMap).forEach(key => {
             (componentMap as any)[key] = this.attachContextToComponent({ module: this })(componentMap[key]);
         })
-    }
-
-    showMessage(message: string, title?: string, canCloseManually?: boolean) {
-        this.package.showMessage(message, title, canCloseManually);
-    }
-
-    showWait(message: string, title?: string, canCloseManually?: boolean) {
-        this.package.showWait(message, title, canCloseManually);
-    }
-
-    showError(message: string, title?: string, canCloseManually?: boolean) {
-        this.package.showError(message, title, canCloseManually);
-    }
-
-    clearAlert() {
-        this.package.clearAlert();
     }
 
     main() {}

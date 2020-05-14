@@ -1,6 +1,6 @@
 {
   "name": "@skyslit/ark-react-native",
-  "version": "1.0.10",
+  "version": "1.0.1",
   "description": "A React Native Framework for building modular business application",
   "main": "./build/index.js",
   "scripts": {
@@ -8,15 +8,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "react",
+    "react-native",
     "business",
     "framework"
   ],
   "author": "Skyslit Network Private Limited",
   "license": "ISC",
   "peerDependencies": {
-    "react": "^16.13.1",
-    "react-router-dom": "^5.1.2",
+    "react": "16.11.0",
     "redux": "^4.0.5",
     "react-redux": "^7.2.0",
     "axios": "^0.19.2",
@@ -36,7 +35,7 @@
     "i18next": "^19.4.0",
     "install": "^0.13.0",
     "npm": "^6.14.3",
-    "react": "^16.13.1",
+    "react": "16.11.0",
     "react-i18next": "^11.3.4",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
