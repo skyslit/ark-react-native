@@ -40,6 +40,7 @@ export type PackageGlobalState = {
 }
 
 export const PackageStoreType = {
+    CORE_INITIALIZE: `${CORE_PACKAGE_ID}_INITIALIZE`,
     CORE_SET_CURRENT_USER: `${CORE_PACKAGE_ID}_SET_CURRENT_USER`,
     CORE_SET_THEME: `${CORE_PACKAGE_ID}_SET_THEME`,
     CORE_SET_ERROR: `${CORE_PACKAGE_ID}_SET_ERROR`,
@@ -70,6 +71,10 @@ const initialState: PackageGlobalState = {
 
 const createPackageReducer = (): Reducer => (state: Partial<PackageGlobalState> = initialState, action: AnyAction) => {
     switch (action.type) {
+        case PackageStoreType.CORE_INITIALIZE: {
+            const { payload } = action.value;
+            return Object.assign({}, state, payload, { hasInitialized: true });
+        }
         case PackageStoreType.CORE_SET_CURRENT_USER: {
             const { isAuthenticated, userInfo, token } = action.payload;
             return Object.assign({}, state, {
@@ -377,6 +382,30 @@ export class ArkPackage<ModuleType = any, ConfigType = BaseConfigType, ServicePr
         done(null, this as any);
     }
 
+    fetchContext() {
+        this.getServiceProvider('Main' as any).get('/__context')
+            .then((response) => {
+                this.store.dispatch({
+                    type: PackageStoreType.CORE_INITIALIZE,
+                    value: {
+                        payload: response.data
+                    }
+                })
+            }, (err) => {
+                console.error(err);
+                setTimeout(() => {
+                    this.fetchContext();
+                }, 100);
+            })
+    }
+
+    private shouldInitializeServerContext(): boolean {
+        return Object.keys(this.modules).some((key) => {
+            // @ts-ignore
+            return (this.modules[key] as ArkModule).initializeServerContext;
+        })
+    }
+
     initialize(done: (err: Error, options: ArkPackageOption<ModuleType, PackageStateType<ModuleType>>) => void, connect?: any) {
         Object.keys(this.modules).forEach((moduleKey) => {
             // @ts-ignore
@@ -390,6 +419,9 @@ export class ArkPackage<ModuleType = any, ConfigType = BaseConfigType, ServicePr
                 throw err;
             }
             this._initializeApp(done, connect);
+            if (this.shouldInitializeServerContext()) {
+                this.fetchContext();
+            }
         });
     }
 }

@@ -9,6 +9,7 @@ type ProviderMap<T> = Record<Extract<T, string>, AxiosInstance>;
 export class ArkModule<StateType = any, Providers = any> implements IArkModule<StateType> {
     type: string = null;
     id: string = null;
+    initializeServerContext: boolean = false;
 
     package: ArkPackage = null;
     views: ComponentMap = {};
