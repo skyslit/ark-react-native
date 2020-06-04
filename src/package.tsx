@@ -47,6 +47,7 @@ export const PackageStoreType = {
     CORE_SET_WAIT: `${CORE_PACKAGE_ID}_SET_WAIT`,
     CORE_SET_MSG: `${CORE_PACKAGE_ID}_SET_MSG`,
     CORE_CLEAR_ALERT: `${CORE_PACKAGE_ID}_CLEAR_ALERT`,
+    CORE_UPDATE_CONTEXT: `${CORE_PACKAGE_ID}_UPDATE_CONTEXT`,
 }
 
 const initialState: PackageGlobalState = {
@@ -115,6 +116,12 @@ const createPackageReducer = (): Reducer => (state: Partial<PackageGlobalState> 
                 waitAlert: Object.assign({}, state.waitAlert, {
                     isOpen: false
                 })
+            })
+        }
+        case PackageStoreType.CORE_UPDATE_CONTEXT: {
+            const { key, value } = action.payload;
+            return Object.assign({}, state, {
+                [key]: value
             })
         }
         default: {
@@ -264,6 +271,15 @@ export class ArkPackage<ModuleType = any, ConfigType = BaseConfigType, ServicePr
         }
     }
 
+    updateContext(key: string, value: any) {
+        this.store.dispatch({
+            type: PackageStoreType.CORE_UPDATE_CONTEXT,
+            payload: {
+                key, value
+            }
+        })
+    }
+
     setupStore(enableReduxDevTool: boolean = false): Store<PackageStateType<ModuleType>> {
         if (this.store) {
             return this.store;
@@ -392,10 +408,9 @@ export class ArkPackage<ModuleType = any, ConfigType = BaseConfigType, ServicePr
                     }
                 })
             }, (err) => {
-                console.error(err);
                 setTimeout(() => {
                     this.fetchContext();
-                }, 100);
+                }, 500);
             })
     }
 
