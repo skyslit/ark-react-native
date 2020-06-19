@@ -3,10 +3,11 @@ import { IArkModule, ComponentMap, ActionTypes } from "./types"
 import { ArkPackage, PackageStoreType, CORE_PACKAGE_ID } from "./package"
 import { Reducer, AnyAction } from "redux";
 import { AxiosInstance } from 'axios';
+import { EventEmitter } from 'events';
 
 type ProviderMap<T> = Record<Extract<T, string>, AxiosInstance>;
 
-export class ArkModule<StateType = any, Providers = any> implements IArkModule<StateType> {
+export class ArkModule<StateType = any, Providers = any> extends EventEmitter implements IArkModule<StateType> {
     type: string = null;
     id: string = null;
     initializeServerContext: boolean = false;
@@ -24,6 +25,7 @@ export class ArkModule<StateType = any, Providers = any> implements IArkModule<S
     providers: ProviderMap<Providers> = {} as any
 
     constructor (type: string, opts?: Partial<ArkModule>) {
+        super({ captureRejections: true });
         this.type = type;
         if (opts) {
             Object.keys(opts).forEach(k => (this as any)[k] = (opts as any)[k]);
